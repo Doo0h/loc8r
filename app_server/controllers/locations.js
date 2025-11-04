@@ -6,7 +6,7 @@ const apiOptions = {
 };
 if (process.env.NODE_ENV === 'production') {
   // 🔽🔽🔽 [수정] 2번에서 복사한 'loc8r-api'의 주소를 여기에 붙여넣기 🔽🔽🔽
-  apiOptions.server = 'https://loc8r-2r0e.onrender.com/';
+  apiOptions.server = 'https://loc8r-2r0e.onrender.com';
 }
 
 // ⭐ 거리를 m 또는 km 단위의 문자열로 변환하는 함수
