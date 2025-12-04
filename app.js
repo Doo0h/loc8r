@@ -12,20 +12,13 @@ require('./app_api/config/passport');
 const apiRouter = require('./app_api/routes/index');
 
 var app = express();
+const cors = require('cors');
+const corsOptions ={
+  origin: '*',
+  optionsSuccessStatus: 200
+};
 
-// view engine setup
-app.set('views', path.join(__dirname, 'app_server', 'views'));
-app.set('view engine', 'pug');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-// 정적 파일 경로 설정
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'app_public', 'build')));
-app.use(passport.initialize());
+app.use(cors(corsOptions));
 
 // 🔽🔽🔽 [수정] CORS 설정 (OPTIONS 요청 처리 추가) 🔽🔽🔽
 app.use('/api', (req, res, next) => {
@@ -39,6 +32,22 @@ app.use('/api', (req, res, next) => {
     next();
   }
 });
+
+
+
+// view engine setup
+app.set('views', path.join(__dirname, 'app_server', 'views'));
+app.set('view engine', 'pug');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'app_public', 'build')));
+app.use(passport.initialize());
+
+
 // 🔼🔼🔼 [수정] CORS 설정 (OPTIONS 요청 처리 추가) 🔼🔼🔼
 // 1. API 라우트 (가장 먼저 처리)
 app.use('/api', apiRouter);

@@ -2,7 +2,6 @@ extends layout
 include _includes/sharedHTMLfunctions
 
 block content
-  // 🔽🔽🔽 [수정] Express 위치 목록 코드를 삭제하고 Angular 컴포넌트 삽입 🔽🔽🔽
   .row.banner
     .col-12
       h1= pageHeader.title
@@ -10,16 +9,17 @@ block content
 
   .row
     .col-12.col-md-8
+      //- 이미지에 있는 에러 메시지 출력 부분
+      .error= message
+      
+      //- 요청하신 Angular 컴포넌트 태그 (빨간 박스 부분)
       app-home-list
 
     .col-12.col-md-4
       p.lead= sidebar
-  // 🔼🔼🔼 [수정] Express 위치 목록 코드를 삭제하고 Angular 컴포넌트 삽입 🔼🔼🔼
 
+// Angular 빌드 파일 참조 (사용자의 실제 파일명 유지)
 block scripts
-  // 🔽🔽🔽 [추가] layout.pug에 정의된 block scripts를 오버라이드 🔽🔽🔽
-  // Angular 빌드 파일들을 참조합니다.
-  script(src='/build/main.js')
-  script(src='/build/polyfills.js')
-  script(src='/build/runtime.js')
-  // 🔼🔼🔼 [추가] layout.pug에 정의된 block scripts를 오버라이드 🔼🔼🔼
+  script(src='/build/runtime.e4985b6c090739db.js')
+  script(src='/build/polyfills.05600847d04151be.js')
+  script(src='/build/main.bcea5bafbfa29b62.js')
