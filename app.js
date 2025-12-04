@@ -5,6 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const passport = require('passport');
+const cors = require('cors'); // cors 위치 이동
 
 require('./app_api/models/db');
 require('./app_api/config/passport');
@@ -12,27 +13,17 @@ require('./app_api/config/passport');
 const apiRouter = require('./app_api/routes/index');
 
 var app = express();
-const cors = require('cors');
+
+// 🔽🔽🔽 [수정 포인트 1] CORS 설정을 가장 먼저 실행 🔽🔽🔽
+// 복잡한 수동 설정 대신 이 라이브러리 하나면 충분합니다.
 const corsOptions = {
-  origin: '*',
+  origin: '*', // 모든 주소 허용 (개발용)
+  credentials: true, // 인증 정보(쿠키 등) 포함 허용
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
-
-// 🔽🔽🔽 [수정] CORS 설정 (OPTIONS 요청 처리 추가) 🔽🔽🔽
-app.use('/api', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  
-  // [중요!] 브라우저가 "보내도 돼?"(OPTIONS)라고 물어보면 "ㅇㅇ(200 OK)"라고 답해주는 코드
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
+// 🔼🔼🔼 [수정 끝] 🔼🔼🔼
 
 
 // view engine setup
@@ -48,35 +39,37 @@ app.use(express.static(path.join(__dirname, 'app_public', 'build')));
 app.use(passport.initialize());
 
 
-// 🔼🔼🔼 [수정] CORS 설정 (OPTIONS 요청 처리 추가) 🔼🔼🔼
-// 1. API 라우트 (가장 먼저 처리)
+// 1. API 라우트
 app.use('/api', apiRouter);
 
-// 2. Angular 라우트 (API가 아닌 요청 처리)
+// 2. Angular 라우트 (새로고침 시 404 방지용)
 app.get(/(\/about)|(\/location\/[a-z0-9]{24})/, function(req, res, next) {
   res.sendFile(path.join(__dirname, 'app_public', 'build', 'index.html'));
 });
 
-// 3. [위치 수정됨] 인증 에러(UnauthorizedError) 전용 핸들러
-// (반드시 라우트들보다 뒤에 있어야 함)
+// 3. 인증 에러 핸들러
 app.use((err, req, res, next) => {
   if (err.name === 'UnauthorizedError') {
     res
       .status(401)
       .json({"message" : err.name + ": " + err.message});
+  } else {
+      next(err); // 다른 에러는 다음 핸들러로 넘김
   }
 });
 
-// 4. [위치 수정됨] 404 에러 핸들러 (마지막에 위치)
-// 위에서 처리되지 않은 요청은 404로 간주
+// 4. 404 에러 핸들러
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
 // 5. 일반 에러 핸들러
 app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
