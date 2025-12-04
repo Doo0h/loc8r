@@ -1,0 +1,40 @@
+<nav class="navbar fixed-top navbar-expand-sm navbar-light">
+  <div class="container">
+    <a href="/" class="navbar-brand">Loc8r</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+      aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbarMain" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a routerLink="about" routerLinkActive="active" class="nav-link">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a routerLink="login" class="nav-link" *ngIf="!isLoggedIn()">Sign in</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn()">
+          <a class="nav-link" role="button">{{ getUsername() }}</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn()">
+          <a class="nav-link" (click)="doLogout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container content">
+  <router-outlet></router-outlet>
+
+  <footer>
+    <div class="row">
+      <div class="col-12">
+        <small>&copy; 2021810009 dooyoung Kim</small>
+      </div>
+    </div>
+  </footer>
+</div>
