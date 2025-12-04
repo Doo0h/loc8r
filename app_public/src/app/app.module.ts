@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -21,6 +21,7 @@ import { DetailsPageComponent } from './details-page/details-page.component';
 import { MostRecentFirstPipe } from './most-recent-first.pipe';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,13 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     ReactiveFormsModule,
     // 🔽🔽🔽 [변경] 긴 라우팅 설정 대신 모듈 이름만 추가 🔽🔽🔽
-    AppRoutingModule 
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }) 
     // 🔼🔼🔼 [변경] 긴 라우팅 설정 대신 모듈 이름만 추가 🔼🔼🔼
   ],
   providers: [],
